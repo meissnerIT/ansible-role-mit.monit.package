@@ -4,8 +4,8 @@
   apt: 
     pkg: monit
 - name: Copy monit configuration
-  copy:
+  template:
     src: local-mit-zabbix
     dest: /etc/monit/conf.d/
-  notify: Restart monit
+  notify: Reload monit
 

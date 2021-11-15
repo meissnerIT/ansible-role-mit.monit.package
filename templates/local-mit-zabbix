@@ -1,4 +1,6 @@
-set mailserver 10.131.1.100 port 25
+# Distributed via ansible - mit.monit.package
+
+set mailserver {{ monit_mailserver }} port 25
 
 check host zabbix with address 10.0.33.27
     # https://www.mmonit.com/monit/documentation/monit.html#HTTP
@@ -9,7 +11,7 @@ check host zabbix with address 10.0.33.27
         content = "Zabbix"
         for 3 cycles
     then alert
-    alert root@meissner.it
+    alert {{ monit_alert }}
 
 # Debugging
 #set httpd
