@@ -1,0 +1,11 @@
+---
+
+- name: Install monit
+  apt: 
+    pkg: monit
+- name: Copy monit configuration
+  copy:
+    src: local-mit-zabbix
+    dest: /etc/monit/conf.d/
+  notify: Restart monit
+

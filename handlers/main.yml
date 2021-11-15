@@ -1,0 +1,8 @@
+---
+
+- name: Reload monit
+  service:
+    name: monit
+    state: reloaded
+  listen: "Reload monit"
+

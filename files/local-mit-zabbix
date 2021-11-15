@@ -1,0 +1,18 @@
+set mailserver 10.131.1.100 port 25
+
+check host zabbix with address 10.0.33.27
+    # https://www.mmonit.com/monit/documentation/monit.html#HTTP
+    if failed
+        port 443
+        protocol http
+        with ssl options {selfsigned: allow}
+        content = "Zabbix"
+        for 3 cycles
+    then alert
+    alert root@meissner.it
+
+# Debugging
+#set httpd
+#      port 2812
+#      allow localhost
+
