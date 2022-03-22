@@ -1,14 +1,21 @@
 # Distributed via ansible - mit.monit.package
 
 set mailserver {{ monit_mailserver }} port 25
+set mail-format { from: {{ monit_mail_from }} }
 
-check host zabbix with address 10.0.33.27
+check host zabbix with address {{ monit_zabbix_server }}
     # https://www.mmonit.com/monit/documentation/monit.html#HTTP
     if failed
         port 443
-        protocol http
+        protocol https
+{% if monit_zabbix_selfsigned_allow|default(false) %}
         with ssl options {selfsigned: allow}
+{% endif %}
         content = "Zabbix"
+        for 3 cycles
+    then alert
+    if failed
+        port 10051
         for 3 cycles
     then alert
     alert {{ monit_alert }}
