@@ -3,17 +3,12 @@
 - name: Install monit
   package: 
     name: monit
-- name: Copy monit configuration local-mit-zabbix
-  template:
-    src: local-mit-zabbix
-    dest: /etc/monit/conf.d/
-  notify: Reload monit
-  when: monit_zabbix_server is defined
 
-- name: Copy monit configuration local-dev-dri
+- name: Copy monit configuration
   template:
-    src: local-dev-dri
+    src: "monit/{{ item }}"
     dest: /etc/monit/conf.d/
   notify: Reload monit
-  when: monit_enable_local_dev_dri is defined
+  loop: "{{ monit_configs }}"
+  when: monit_configs is defined
 
