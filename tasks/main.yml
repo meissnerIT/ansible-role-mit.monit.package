@@ -1,14 +1,25 @@
 ---
-
 - name: Install monit
-  package: 
+  ansible.builtin.package:
     name: monit
 
-- name: Copy monit configuration
-  template:
-    src: "monit/{{ item }}"
-    dest: /etc/monit/conf.d/
+- name: Copy monit default configuration
+  ansible.builtin.copy:
+    src: monitrc
+    dest: "{{ install_prefix }}/etc/monitrc"
+    mode: 0600
+  when: ansible_os_family == "FreeBSD"
+
+- name: Copy monit configurations {{ monit_configs }}
+  ansible.builtin.template:
+    src: monit/{{ item }}
+    dest: "{{ install_prefix }}/etc/monit/conf.d/"
   notify: Reload monit
   loop: "{{ monit_configs }}"
   when: monit_configs is defined
 
+- name: Enable and start monit
+  ansible.builtin.service:
+    name: monit
+    state: started
+    enabled: true
