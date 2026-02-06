@@ -7,13 +7,14 @@
   ansible.builtin.copy:
     src: monitrc
     dest: "{{ install_prefix }}/etc/monitrc"
-    mode: 0600
+    mode: "0600"
   when: ansible_os_family == "FreeBSD"
 
-- name: Copy monit configurations {{ monit_configs }}
+- name: Copy monit configurations to {{ etc_prefix }}/etc/monit/conf.d/ # noqa: name[template]
   ansible.builtin.template:
     src: monit/{{ item }}
-    dest: "{{ install_prefix }}/etc/monit/conf.d/"
+    dest: "{{ etc_prefix }}/etc/monit/conf.d/"
+    mode: "0644"
   notify: Reload monit
   loop: "{{ monit_configs }}"
   when: monit_configs is defined
