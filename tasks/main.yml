@@ -6,7 +6,7 @@
 - name: Copy monit default configuration
   ansible.builtin.copy:
     src: monitrc
-    dest: "{{ install_prefix }}/etc/monitrc"
+    dest: "{{ etc_prefix }}/etc/monitrc"
     mode: "0600"
   when: ansible_os_family == "FreeBSD"
 
