@@ -19,6 +19,14 @@
   loop: "{{ monit_configs }}"
   when: monit_configs is defined
 
+- name: Include inventory_hostname.yml
+  ansible.builtin.include_tasks: "{{ tasks_file }}"
+  when: tasks_file != ""
+  vars:
+    tasks_file: "{{ lookup('ansible.builtin.first_found', files, errors='ignore') }}"
+    files:
+      - "local/roles/{{ ansible_role_name }}/tasks/{{ inventory_hostname }}.yml"
+
 - name: Enable and start monit
   ansible.builtin.service:
     name: monit
