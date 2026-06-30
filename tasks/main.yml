@@ -10,6 +10,13 @@
     mode: "0600"
   when: ansible_os_family == "FreeBSD"
 
+- name: Create {{ etc_prefix }}/etc/monit/conf.d/ # noqa: name[template]
+  ansible.builtin.file:
+    path: "{{ etc_prefix }}/etc/monit/conf.d/"
+    state: directory
+    mode: "0755"
+  when: monit_configs is defined or monit_services is defined
+
 - name: Copy monit configurations to {{ etc_prefix }}/etc/monit/conf.d/ # noqa: name[template]
   ansible.builtin.template:
     src: monit/{{ item }}
@@ -18,6 +25,17 @@
   notify: Reload monit
   loop: "{{ monit_configs }}"
   when: monit_configs is defined
+
+- name: Copy monit service to {{ etc_prefix }}/etc/monit/conf.d/{{ service }} # noqa: name[template]
+  ansible.builtin.template:
+    src: monit/local-mit-service
+    dest: "{{ etc_prefix }}/etc/monit/conf.d/local-mit-{{ service }}"
+    mode: "0644"
+  notify: Reload monit
+  loop: "{{ monit_services }}"
+  loop_control:
+    loop_var: service
+  when: monit_services is defined
 
 - name: Enable and start monit
   ansible.builtin.service:
